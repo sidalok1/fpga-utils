@@ -48,9 +48,10 @@ module uarttx #(
     parameter [1:0] STOP = 1
 
 ) (
-    input i_clk,
-    input i_en,
-    input [FRAME-1:0] i_data,
+    input wire i_clk,
+    input wire i_en,
+    input wire i_rst,
+    input wire [FRAME-1:0] i_data,
     output reg o_tx,
     output wire o_busy
 );
@@ -63,8 +64,9 @@ module uarttx #(
         .I_CLK_FRQ(I_CLK_FRQ),
         .FREQUENCY(BAUD)
     ) baud_clock (
+        .rst(i_rst),
+        .en(1),
         .i_clk(i_clk),
-        .i_rst(i_rst),
         .o_clk(baud_enable)
     );
 

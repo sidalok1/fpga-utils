@@ -7,27 +7,27 @@ default 1 sample) can be used to cross clock domains.
 */
 
 module edgedetect #(
-    parameter D_NEGEDGE = 0 // Detect negedge if true (defaults to false) 
+    parameter DETECT_NEGEDGE = 0 // Detect negedge if true (defaults to false) 
 ) (
-    input   i_clk,
-    input   i_rst, // synchronous reset
-    input   i_sig,
-    output  o_en
+    input wire clk,
+    input wire rst,
+    input wire sig,
+    output wire en
 );
 
-    reg curr_sig, past_sig;
+    reg curr_sig = 0, past_sig = 0;
 
-    assign o_en = D_NEGEDGE ?
+    assign en = DETECT_NEGEDGE ?
         (past_sig == 1) && (curr_sig == 0)
             :
         (past_sig == 0) && (curr_sig == 1);
 
-    always @ ( posedge i_clk ) begin
-        if ( i_rst ) begin
-            curr_sig <= i_sig;
-            past_sig <= i_sig;
+    always @ ( posedge clk ) begin
+        if ( rst ) begin
+            curr_sig <= 0;
+            past_sig <= 0;
         end else begin
-            curr_sig <= i_sig;
+            curr_sig <= sig;
             past_sig <= curr_sig;
         end
     end
